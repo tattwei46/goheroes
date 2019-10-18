@@ -19,6 +19,7 @@ func (a *App) Initialize() {
 
 func (a *App) setRouters() {
 	a.Get("/", a.handleRequest(handler.SayHello))
+	a.Get("/heroes", a.handleRequest(handler.GetHeroes))
 }
 
 func (a *App) Get(path string, f func(w http.ResponseWriter, r *http.Request)) {
