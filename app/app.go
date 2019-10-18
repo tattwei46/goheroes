@@ -18,7 +18,7 @@ func (a *App) Initialize() {
 }
 
 func (a *App) setRouters() {
-	a.Get("/", handler)
+	a.Get("/", a.handleRequest(HelloHandler))
 }
 
 func (a *App) Get(path string, f func(w http.ResponseWriter, r *http.Request)) {
@@ -28,6 +28,14 @@ func (a *App) Get(path string, f func(w http.ResponseWriter, r *http.Request)) {
 func (a *App) Run(port string) {
 	log.Fatal(http.ListenAndServe(port, a.Router))
 }
-func handler(w http.ResponseWriter, r *http.Request) {
+func HelloHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello world\n")
+}
+
+type RequestHandlerFunction func(w http.ResponseWriter, r *http.Request)
+
+func (a *App) handleRequest(handler RequestHandlerFunction) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		handler(w, r)
+	}
 }
