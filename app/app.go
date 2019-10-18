@@ -1,10 +1,10 @@
 package app
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
+	"./handler"
 	"github.com/gorilla/mux"
 )
 
@@ -18,7 +18,7 @@ func (a *App) Initialize() {
 }
 
 func (a *App) setRouters() {
-	a.Get("/", a.handleRequest(HelloHandler))
+	a.Get("/", a.handleRequest(handler.SayHello))
 }
 
 func (a *App) Get(path string, f func(w http.ResponseWriter, r *http.Request)) {
@@ -27,9 +27,6 @@ func (a *App) Get(path string, f func(w http.ResponseWriter, r *http.Request)) {
 
 func (a *App) Run(port string) {
 	log.Fatal(http.ListenAndServe(port, a.Router))
-}
-func HelloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello world\n")
 }
 
 type RequestHandlerFunction func(w http.ResponseWriter, r *http.Request)
