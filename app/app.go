@@ -18,7 +18,7 @@ func (a *App) Initialize() {
 }
 
 func (a *App) setRouters() {
-	a.Router.HandleFunc("/", handler)
+	a.Router.HandleFunc("/", handler).Methods("GET")
 }
 func (a *App) Run(port string) {
 	log.Fatal(http.ListenAndServe(port, a.Router))
