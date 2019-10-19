@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"../customlogger"
 	"github.com/gorilla/mux"
 )
 
@@ -13,6 +14,8 @@ type Hero struct {
 }
 
 func GetHeroes(w http.ResponseWriter, r *http.Request) {
+	logger := customlogger.GetInstance()
+	logger.Println("GetHeroes endpoint triggered")
 	var heroes []Hero
 	heroes = append(heroes, Hero{ID: "1", Name: "Ironman"})
 	w.Header().Set("Content-Type", "application/json")
@@ -20,6 +23,8 @@ func GetHeroes(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetHero(w http.ResponseWriter, r *http.Request) {
+	logger := customlogger.GetInstance()
+	logger.Println("GetHero endpoint triggered")
 	var heroes []Hero
 	heroes = append(heroes,
 		Hero{ID: "1", Name: "Ironman"},
@@ -35,6 +40,8 @@ func GetHero(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteHero(w http.ResponseWriter, r *http.Request) {
+	logger := customlogger.GetInstance()
+	logger.Println("DeleteHero endpoint triggered")
 	var heroes []Hero
 	heroes = append(heroes,
 		Hero{ID: "1", Name: "Ironman"},
@@ -51,6 +58,8 @@ func DeleteHero(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateHero(w http.ResponseWriter, r *http.Request) {
+	logger := customlogger.GetInstance()
+	logger.Println("UpdateHero endpoint triggered")
 	var heroes []Hero
 	var updatedHeroes []Hero
 	heroes = append(heroes,
@@ -72,6 +81,8 @@ func UpdateHero(w http.ResponseWriter, r *http.Request) {
 }
 
 func AddHero(w http.ResponseWriter, r *http.Request) {
+	logger := customlogger.GetInstance()
+	logger.Println("AddHero endpoint triggered")
 	w.Header().Set("Content-Type", "application/json")
 	var hero Hero
 	_ = json.NewDecoder(r.Body).Decode(&hero)
