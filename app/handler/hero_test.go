@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetHeroes(t *testing.T) {
@@ -25,10 +26,8 @@ func TestGetHeroes(t *testing.T) {
 
 	expected := `[{"id":"1","name":"Ironman"}]`
 	result := strings.TrimSpace(rr.Body.String())
+	assert.Equal(t, expected, result, "handle returned unexpected body, got %v, want %v", result, expected)
 
-	if result != expected {
-		t.Errorf("handle returned unexpected body, got %v, want %v", result, expected)
-	}
 }
 
 func TestGetHeroById(t *testing.T) {
@@ -54,8 +53,6 @@ func TestGetHeroById(t *testing.T) {
 
 	expected := `{"id":"1","name":"Ironman"}`
 	result := strings.TrimSpace(rr.Body.String())
+	assert.Equal(t, expected, result, "handle returned unexpected body, got %v, want %v", result, expected)
 
-	if result != expected {
-		t.Errorf("handle returned unexpected body, got %v, want %v", result, expected)
-	}
 }
