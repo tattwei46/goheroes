@@ -1,10 +1,12 @@
 package app
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
 	"./handler"
+	"./model/hero"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 )
@@ -15,41 +17,29 @@ type App struct {
 }
 
 func (a *App) Initialize() {
-	//.Router = mux.NewRouter()
 	a.Router = gin.Default()
 	a.setRouters()
-	// spa := spaHandler{staticPath: "static", indexPath: "index.html"}
-	// a.Router.PathPrefix("/").Handler(spa)
 }
 
 func (a *App) setRouters() {
+
+	heroList := hero.New()
+	heroList.Add(hero.Hero{ID: "1", Name: "Ironman"})
+	heroList.Add(hero.Hero{ID: "2", Name: "Captain America"})
+	heroList.Add(hero.Hero{ID: "3", Name: "Hulk"})
+	fmt.Println(heroList.GetAll())
+
 	api := a.Router.Group("/api")
 	{
-		api.GET("/heroes", handler.GetHeroes)
-		api.GET("/hero/:ID", handler.GetHero)
-		api.POST("/hero", handler.AddHero)
-		api.DELETE("/hero/:ID", handler.DeleteHero)
-		api.PATCH("/hero/:ID", handler.UpdateHero)
+		api.GET("/heroes", handler.GetHeroes(heroList))
+		api.GET("/hero/:ID", handler.GetHero(heroList))
+		api.POST("/hero", handler.AddHero(heroList))
+		api.DELETE("/hero/:ID", handler.DeleteHero(heroList))
+		api.PATCH("/hero/:ID", handler.UpdateHero(heroList))
 	}
 
 	a.Router.Use(static.Serve("/", static.LocalFile("./static", true)))
 }
-
-// func (a *App) Get(path string, f func(w http.ResponseWriter, r *http.Request)) {
-// 	a.Router.HandleFunc(path, f).Methods("GET")
-// }
-
-// func (a *App) Post(path string, f func(w http.ResponseWriter, r *http.Request)) {
-// 	a.Router.HandleFunc(path, f).Methods("POST")
-// }
-
-// func (a *App) Delete(path string, f func(w http.ResponseWriter, r *http.Request)) {
-// 	a.Router.HandleFunc(path, f).Methods("DELETE")
-// }
-
-// func (a *App) Patch(path string, f func(w http.ResponseWriter, r *http.Request)) {
-// 	a.Router.HandleFunc(path, f).Methods("PATCH")
-// }
 
 func (a *App) Run(port string) {
 	log.Fatal(http.ListenAndServe(port, a.Router))
