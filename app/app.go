@@ -30,6 +30,7 @@ func (a *App) setRouters() {
 	fmt.Println(heroList.GetAll())
 
 	api := a.Router.Group("/api")
+	api.Use(AuthenticationRequired())
 	{
 		api.GET("/heroes", handler.GetHeroes(heroList))
 		api.GET("/hero/:ID", handler.GetHero(heroList))
@@ -45,9 +46,9 @@ func (a *App) Run(port string) {
 	log.Fatal(http.ListenAndServe(port, a.Router))
 }
 
-// func checkAuthorized(next http.HandlerFunc) http.HandlerFunc {
-// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		fmt.Println("Authorization Successful")
-// 		next(w, r)
-// 	})
-// }
+func AuthenticationRequired() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		fmt.Println("Authorization Successful")
+		c.Next()
+	}
+}
