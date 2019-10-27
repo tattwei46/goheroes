@@ -1,11 +1,10 @@
 package handler
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"../customlogger"
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
 type Hero struct {
@@ -13,16 +12,16 @@ type Hero struct {
 	Name string `json:"name"`
 }
 
-func GetHeroes(w http.ResponseWriter, r *http.Request) {
+func GetHeroes(c *gin.Context) {
 	logger := customlogger.GetInstance()
 	logger.Println("GetHeroes endpoint triggered")
 	var heroes []Hero
 	heroes = append(heroes, Hero{ID: "1", Name: "Ironman"})
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(heroes)
+	c.Header("Content-Type", "application/json")
+	c.JSON(http.StatusOK, heroes)
 }
 
-func GetHero(w http.ResponseWriter, r *http.Request) {
+func GetHero(c *gin.Context) {
 	logger := customlogger.GetInstance()
 	logger.Println("GetHero endpoint triggered")
 	var heroes []Hero
@@ -30,16 +29,15 @@ func GetHero(w http.ResponseWriter, r *http.Request) {
 		Hero{ID: "1", Name: "Ironman"},
 		Hero{ID: "2", Name: "Hulk"},
 		Hero{ID: "3", Name: "Captain America"})
-	w.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(r)
 	for _, hero := range heroes {
-		if hero.ID == params["id"] {
-			json.NewEncoder(w).Encode(hero)
+		if hero.ID == c.Param("ID") {
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusOK, hero)
 		}
 	}
 }
 
-func DeleteHero(w http.ResponseWriter, r *http.Request) {
+func DeleteHero(c *gin.Context) {
 	logger := customlogger.GetInstance()
 	logger.Println("DeleteHero endpoint triggered")
 	var heroes []Hero
@@ -47,17 +45,16 @@ func DeleteHero(w http.ResponseWriter, r *http.Request) {
 		Hero{ID: "1", Name: "Ironman"},
 		Hero{ID: "2", Name: "Hulk"},
 		Hero{ID: "3", Name: "Captain America"})
-	w.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(r)
 	for index, hero := range heroes {
-		if hero.ID == params["id"] {
+		if hero.ID == c.Param("ID") {
 			heroes = append(heroes[:index], heroes[index+1:]...)
-			json.NewEncoder(w).Encode(heroes)
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusOK, heroes)
 		}
 	}
 }
 
-func UpdateHero(w http.ResponseWriter, r *http.Request) {
+func UpdateHero(c *gin.Context) {
 	logger := customlogger.GetInstance()
 	logger.Println("UpdateHero endpoint triggered")
 	var heroes []Hero
@@ -66,25 +63,24 @@ func UpdateHero(w http.ResponseWriter, r *http.Request) {
 		Hero{ID: "1", Name: "Ironman"},
 		Hero{ID: "2", Name: "Hulk"},
 		Hero{ID: "3", Name: "Captain America"})
-	w.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(r)
 	for index, hero := range heroes {
-		if hero.ID == params["id"] {
+		if hero.ID == c.Param("ID") {
 			var hero Hero
-			_ = json.NewDecoder(r.Body).Decode(&hero)
-			hero.ID = params["id"]
+			c.Bind(&hero)
+			hero.ID = c.Param("ID")
 			updatedHeroes = append(heroes[:index], hero)
 			updatedHeroes = append(updatedHeroes, heroes[index+1:]...)
-			json.NewEncoder(w).Encode(updatedHeroes)
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusOK, updatedHeroes)
 		}
 	}
 }
 
-func AddHero(w http.ResponseWriter, r *http.Request) {
+func AddHero(c *gin.Context) {
 	logger := customlogger.GetInstance()
 	logger.Println("AddHero endpoint triggered")
-	w.Header().Set("Content-Type", "application/json")
+	c.Header("Content-Type", "application/json")
 	var hero Hero
-	_ = json.NewDecoder(r.Body).Decode(&hero)
-	json.NewEncoder(w).Encode(&hero)
+	c.Bind(&hero)
+	c.JSON(http.StatusOK, hero)
 }
