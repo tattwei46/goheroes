@@ -27,7 +27,6 @@ func (a *App) setRouters() {
 	heroList.Add(hero.Hero{ID: "1", Name: "Ironman"})
 	heroList.Add(hero.Hero{ID: "2", Name: "Captain America"})
 	heroList.Add(hero.Hero{ID: "3", Name: "Hulk"})
-	fmt.Println(heroList.GetAll())
 
 	api := a.Router.Group("/api")
 	api.Use(AuthenticationRequired())
