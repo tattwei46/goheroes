@@ -11,7 +11,7 @@ all: test build
 build: 
 	$(GOBUILD) -o $(BINARY_NAME)
 test:
-	$(GOTEST)
+	$(GOTEST) -v ./...
 run:
 	$(GOBUILD) -o $(BINARY_NAME) 
 	./$(BINARY_NAME)
